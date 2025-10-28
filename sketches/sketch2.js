@@ -131,6 +131,15 @@ registerSketch('sk2', function (p) {
     p.textSize(28);
     p.text(formatTime(remainingMs), x + 12, y + 38);
 
+    // Update Status
+    p.textSize(14);
+    p.fill(lookingNow ? 20 : 180, lookingNow ? 150 : 40, 40);
+    p.text(lookingNow ? 'status: studying 👀' : 'status: paused ⏸️', x + 12, y + 78);
+
+    // Stops counter
+    p.fill(60);
+    p.text(`stopped: ${stopsCount}`, x + 12, y + 100);
+
   }
 
   function formatTime(ms) {
