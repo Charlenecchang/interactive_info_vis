@@ -1,5 +1,6 @@
-// Instance-mode sketch for tab 3
 registerSketch('sk3', function (p) {
+  let particles = [];
+
   p.setup = function () {
     p.createCanvas(p.windowWidth, p.windowHeight);
   };
@@ -8,16 +9,49 @@ registerSketch('sk3', function (p) {
     p.background(20, 20, 60);
     p.clock();
 
-    // Add Y/M/D Information
+    // Firework in the middle for the inspiring visual effect
+    if (p.frameCount % 3 === 0) {
+      spawnBurst(p.width / 2, p.height / 2, 8, 2, 6);
+    }
 
-    // Create Background Firework Animation
-    // p.ellipse(p.width / 2, p.height / 2, 200, 200);
+    // Update & draw particles
+    p.colorMode(p.RGB);
+    p.noStroke();
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const pt = particles[i];
+      pt.vy += 0.03;
+      pt.vx *= 0.985;
+      pt.vy *= 0.985;
+      pt.x += pt.vx;
+      pt.y += pt.vy;
+      pt.life -= 3;
 
-    p.textSize(12);
-    p.textAlign(p.CENTER, p.CENTER);
-    // p.text('HWK #3. C', p.width / 2, p.height / 2); // Display Study affirmation here 
+      p.fill(pt.h, 255, 255, pt.life);
+      p.circle(pt.x, pt.y, pt.size);
+
+      if (pt.life <= 0) particles.splice(i, 1);
+    }
+
+  };
+
+  // Spawn the firework particles
+  function spawnBurst(x, y, count = 30, vmin = 1, vmax = 5) {
+    for (let i = 0; i < count; i++) {
+      const ang = p.random(p.TAU);
+      const speed = p.random(vmin, vmax);
+      particles.push({
+        x,
+        y,
+        vx: Math.cos(ang) * speed,
+        vy: Math.sin(ang) * speed,
+        h: p.random(360),
+        life: 255,
+        size: p.random(2, 4)
+      });
+    }
   }
 
+  // Current date and time
   p.clock = function () {
     let yr = p.year();
     let mo = p.month();
@@ -38,7 +72,5 @@ registerSketch('sk3', function (p) {
     p.text(yr + "/" + mo + "/" + da, p.width / 2, p.height / 7);
     p.text(hr + ":" + mn + ":" + sc + noon, p.width / 2, p.height / 5);
 
-  }
-
-  p.windowResized = function () { p.resizeCanvas(p.windowWidth, p.windowHeight); };
+  };
 });
