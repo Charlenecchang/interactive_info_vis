@@ -1,5 +1,18 @@
 registerSketch('sk3', function (p) {
   let particles = [];
+  const AFFIRMATIONS = [
+    "You are capable!",
+    "One page at a time.",
+    "Small steps add up.",
+    "Focus beats motivation.",
+    "You’ve got this.",
+    "Progress, not perfection.",
+    "Deep work, deep rewards.",
+    "Show up > give up.",
+    "Future you says thanks."
+  ];
+  let currentAffirm = AFFIRMATIONS[0];
+  let lastAffirmKey = -1;
 
   p.setup = function () {
     p.createCanvas(p.windowWidth, p.windowHeight);
@@ -12,6 +25,17 @@ registerSketch('sk3', function (p) {
     // Firework in the middle for the inspiring visual effect
     if (p.frameCount % 3 === 0) {
       spawnBurst(p.width / 2, p.height / 2, 8, 2, 6);
+    }
+
+    // Change affirmation every 10 minutes
+    const minuteKey = p.hour() * 60 + p.minute();
+    if (p.minute() % 10 === 0 && p.second() <= 2 && minuteKey !== lastAffirmKey) {
+      let next = currentAffirm;
+      while (next === currentAffirm) {
+        next = AFFIRMATIONS[Math.floor(p.random(AFFIRMATIONS.length))];
+      }
+      currentAffirm = next;
+      lastAffirmKey = minuteKey;
     }
 
     // Update & draw particles
@@ -32,6 +56,11 @@ registerSketch('sk3', function (p) {
       if (pt.life <= 0) particles.splice(i, 1);
     }
 
+    // Add affirmation text
+    p.textAlign(p.CENTER, p.CENTER);
+    p.fill(255);
+    p.textSize(p.width / 30);
+    p.text(currentAffirm, p.width / 2, p.height * 0.62);
   };
 
   // Spawn the firework particles
